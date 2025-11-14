@@ -61,10 +61,7 @@ public class Application implements Runnable {
                 description = "Output file to save Maze")
         private File output;
 
-        @Option(
-                names = "--window",
-                description = "Show graphical window",
-                defaultValue = "false")
+        @Option(names = "--window", description = "Show graphical window", defaultValue = "false")
         private boolean showWindow;
 
         public void run() {
@@ -118,10 +115,7 @@ public class Application implements Runnable {
                 description = "Output file to save Maze")
         private File output;
 
-        @Option(
-                names = "--window",
-                description = "Show graphical window",
-                defaultValue = "false")
+        @Option(names = "--window", description = "Show graphical window", defaultValue = "false")
         private boolean showWindow;
 
         public void run() {
