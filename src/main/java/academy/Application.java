@@ -211,7 +211,6 @@ public class Application implements Runnable {
     public void run() {
         var config = loadConfig();
         LOGGER.atInfo().addKeyValue("config", config).log("Config content");
-        Generator gen;
     }
 
     private static void validateDimensions(int width, int height) {
