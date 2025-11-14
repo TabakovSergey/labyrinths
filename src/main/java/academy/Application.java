@@ -105,7 +105,9 @@ public class Application implements Runnable {
                 required = true)
         private String end;
 
-        @Option(names = {"-f", "--file"}, description = "Input file with Maze")
+        @Option(
+                names = {"-f", "--file"},
+                description = "Input file with Maze")
         private File file;
 
         @Option(
