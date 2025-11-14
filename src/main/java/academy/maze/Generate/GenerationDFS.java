@@ -2,10 +2,11 @@ package academy.maze.Generate;
 
 import academy.maze.dto.CellType;
 import academy.maze.dto.Maze;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.Random;
-import java.util.Stack;
 
 public class GenerationDFS implements Generator {
     public Maze generate(int x, int y) {
@@ -20,7 +21,7 @@ public class GenerationDFS implements Generator {
         }
 
         boolean[][] visited = new boolean[x][y];
-        Stack<int[]> stack = new Stack<>();
+        Deque<int[]> stack = new ArrayDeque<>();
         Random random = new Random();
 
         int startX = 0, startY = 0;
