@@ -5,7 +5,6 @@ import academy.maze.Generate.Generator;
 import academy.maze.IO.MazeIO;
 import academy.maze.Solve.ChooseSolver;
 import academy.maze.Solve.Solver;
-import academy.maze.View.MazePrinter;
 import academy.maze.View.MazeWindow;
 import academy.maze.dto.CellType;
 import academy.maze.dto.Maze;
@@ -17,6 +16,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -67,14 +67,11 @@ public class Application implements Runnable {
 
         public void run() {
             validateDimensions(width, height);
-            System.out.println("Generating Maze, algorithm: " + algorithm);
-
             Generator gen = ChooseGenerator.choose(algorithm);
             if (gen == null) {
                 throw new IllegalArgumentException("Unknown algorithm: " + algorithm);
             }
             Maze res = gen.generate(width, height);
-            MazePrinter.printMazeNotPath(res);
 
             showWindowIfRequested(showWindow, res, null);
 
@@ -119,10 +116,6 @@ public class Application implements Runnable {
         private boolean showWindow;
 
         public void run() {
-            System.out.println("Solving Maze, algorithm: " + algorithm);
-
-            Maze maze = MazeIO.loadFromFile(file);
-
             Point startPoint;
             Point endPoint;
             try {
@@ -132,6 +125,13 @@ public class Application implements Runnable {
                 System.out.println(e.getMessage());
                 return;
             }
+
+            if (file == null) {
+                System.out.println("Input file is not specified");
+                return;
+            }
+
+            Maze maze = MazeIO.loadFromFile(file);
 
             if (!inBounds(startPoint, maze) || !inBounds(endPoint, maze)) {
                 System.out.println("Start or end point is out of maze bounds");
@@ -153,12 +153,11 @@ public class Application implements Runnable {
                 JOptionPane.showMessageDialog(null, "Path was not found.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            MazePrinter.printMazePath(maze, path);
 
             showWindowIfRequested(showWindow, maze, path);
 
             if (output != null) {
-                MazeIO.saveToFile(maze, output, path);
+                saveSolvedMaze(maze, path, output.toPath());
             }
         }
 
@@ -185,6 +184,46 @@ public class Application implements Runnable {
 
         private boolean isPathCell(Point p, Maze maze) {
             return maze.cells()[p.x()][p.y()] == CellType.PATH;
+        }
+
+        private void saveSolvedMaze(Maze maze, academy.maze.dto.Path path, java.nio.file.Path outputPath) {
+            try {
+                java.nio.file.Path parent = outputPath.toAbsolutePath().getParent();
+                if (parent != null) {
+                    Files.createDirectories(parent);
+                }
+                CellType[][] cells = maze.cells();
+                char[][] picture = new char[maze.x()][maze.y()];
+                for (int i = 0; i < maze.x(); i++) {
+                    for (int j = 0; j < maze.y(); j++) {
+                        picture[i][j] = cells[i][j] == CellType.WALL ? '#' : ' ';
+                    }
+                }
+
+                if (path != null && path.points().length > 0) {
+                    Point[] points = path.points();
+                    for (int i = 0; i < points.length; i++) {
+                        Point point = points[i];
+                        char mark = '.';
+                        if (i == 0) {
+                            mark = 'O';
+                        } else if (i == points.length - 1) {
+                            mark = 'X';
+                        }
+                        picture[point.x()][point.y()] = mark;
+                    }
+                }
+
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < picture.length; i++) {
+                    sb.append(picture[i]);
+                    sb.append(System.lineSeparator());
+                }
+
+                Files.writeString(outputPath, sb.toString());
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
         }
     }
 

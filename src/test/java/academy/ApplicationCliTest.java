@@ -52,7 +52,7 @@ class ApplicationCliTest {
                         output.toString());
 
         assertThat(exitCode).isEqualTo(0);
-        String expected = String.join(System.lineSeparator(), "#####", "#...#", "###.#", "#  .#", "#####")
+        String expected = String.join(System.lineSeparator(), "#####", "#O..#", "###.#", "#  X#", "#####")
                 + System.lineSeparator();
         assertThat(Files.readString(output)).isEqualTo(expected);
     }
