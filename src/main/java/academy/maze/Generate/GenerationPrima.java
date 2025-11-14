@@ -9,7 +9,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GenerationPrima implements Generator {
 
     public Maze generate(int x, int y) {
-        System.out.println("Generating Prima");
         // размеры либиринта
         int rows = 2 * x + 1;
         int cols = 2 * y + 1;

@@ -10,7 +10,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class GenerationDFS implements Generator {
     public Maze generate(int x, int y) {
-        System.out.println("Generating DFS");
         int rows = x * 2 + 1, cols = y * 2 + 1;
         CellType[][] cell = new CellType[rows][cols];
 
