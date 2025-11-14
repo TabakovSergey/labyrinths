@@ -204,9 +204,7 @@ public class Application implements Runnable {
     private File configPath;
 
     public static void main(String[] args) {
-        int exitCode = new CommandLine(new Application()).execute(args);
-
-        // System.exit(exitCode);
+        new CommandLine(new Application()).execute(args);
     }
 
     @Override

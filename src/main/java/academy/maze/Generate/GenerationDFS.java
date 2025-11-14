@@ -6,7 +6,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GenerationDFS implements Generator {
     public Maze generate(int x, int y) {
@@ -22,7 +22,6 @@ public class GenerationDFS implements Generator {
 
         boolean[][] visited = new boolean[x][y];
         Deque<int[]> stack = new ArrayDeque<>();
-        Random random = new Random();
 
         int startX = 0, startY = 0;
         visited[startX][startY] = true;
@@ -35,7 +34,7 @@ public class GenerationDFS implements Generator {
             List<int[]> neighbors = getUnvisitedNeighbors(cx, cy, visited, x, y);
 
             if (!neighbors.isEmpty()) {
-                int[] next = neighbors.get(random.nextInt(neighbors.size()));
+                int[] next = neighbors.get(ThreadLocalRandom.current().nextInt(neighbors.size()));
                 int nx = next[0], ny = next[1];
 
                 visited[nx][ny] = true;
@@ -65,7 +64,8 @@ public class GenerationDFS implements Generator {
     private void removeWall(int x1, int y1, int x2, int y2, CellType[][] cell) {
         int gridX1 = x1 * 2 + 1, gridY1 = y1 * 2 + 1, gridX2 = x2 * 2 + 1, gridY2 = y2 * 2 + 1;
 
-        int wallX = (gridX1 + gridX2) / 2, wallY = (gridY1 + gridY2) / 2;
+        int wallX = gridX1 + ((gridX2 - gridX1) / 2);
+        int wallY = gridY1 + ((gridY2 - gridY1) / 2);
         cell[wallX][wallY] = CellType.PATH;
 
         cell[gridX2][gridY2] = CellType.PATH;

@@ -25,7 +25,7 @@ public class SolverAStar implements Solver {
 
         PriorityQueue<Node> pq = new PriorityQueue<>();
         gScore[start.x()][start.y()] = 0;
-        pq.add(new Node(start, 0, euristic(start, end)));
+        pq.add(new Node(start, euristic(start, end)));
 
         int[][] dir = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
         while (!pq.isEmpty()) {
@@ -46,7 +46,7 @@ public class SolverAStar implements Solver {
                     gScore[nx][ny] = tentative;
                     parent[nx][ny] = p;
                     int f = tentative + euristic(new Point(nx, ny), end);
-                    pq.add(new Node(new Point(nx, ny), tentative, f));
+                    pq.add(new Node(new Point(nx, ny), f));
                 }
             }
         }
@@ -58,19 +58,39 @@ public class SolverAStar implements Solver {
     }
 
     private static class Node implements Comparable<Node> {
-        Point point;
-        int g;
-        int f;
+        private final Point point;
+        private final int f;
 
-        public Node(Point point, int g, int f) {
+        public Node(Point point, int f) {
             this.point = point;
-            this.g = g;
             this.f = f;
         }
 
         @Override
         public int compareTo(Node o) {
-            return Integer.compare(this.f, o.f);
+            int cmp = Integer.compare(this.f, o.f);
+            if (cmp != 0) {
+                return cmp;
+            }
+            cmp = Integer.compare(this.point.x(), o.point.x());
+            if (cmp != 0) {
+                return cmp;
+            }
+            return Integer.compare(this.point.y(), o.point.y());
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (!(obj instanceof Node other)) return false;
+            return this.f == other.f && this.point.equals(other.point);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = Integer.hashCode(f);
+            result = 31 * result + point.hashCode();
+            return result;
         }
     }
 }

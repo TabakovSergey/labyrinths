@@ -4,7 +4,7 @@ import academy.maze.HelpAlgorithm.Edge;
 import academy.maze.dto.CellType;
 import academy.maze.dto.Maze;
 import java.util.PriorityQueue;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GenerationPrima implements Generator {
 
@@ -28,8 +28,7 @@ public class GenerationPrima implements Generator {
         cell[startGridX][startGridY] = CellType.PATH;
         visited[startX][startY] = true;
 
-        Random random = new Random();
-        addEdge(startX, startY, visited, edges, x, y, random);
+        addEdge(startX, startY, visited, edges, x, y);
         while (!edges.isEmpty()) {
             Edge e = edges.poll();
             int x1 = e.GetX1(), y1 = e.GetY1();
@@ -59,19 +58,22 @@ public class GenerationPrima implements Generator {
 
             cell[toGridX][toGridY] = CellType.PATH;
 
-            cell[(fromGridX + toGridX) / 2][(fromGridY + toGridY) / 2] = CellType.PATH;
+            int midX = fromGridX + ((toGridX - fromGridX) / 2);
+            int midY = fromGridY + ((toGridY - fromGridY) / 2);
+            cell[midX][midY] = CellType.PATH;
 
-            addEdge(toX, toY, visited, edges, x, y, random);
+            addEdge(toX, toY, visited, edges, x, y);
         }
 
         return new Maze(cell, rows, cols);
     }
 
     private void addEdge(
-            int x, int y, boolean[][] visited, PriorityQueue<Edge> Queue, int rows, int cols, Random random) {
-        if (x > 0 && !visited[x - 1][y]) Queue.add(new Edge(x, y, x - 1, y, random.nextInt(10) + 1));
-        if (x + 1 < rows && !visited[x + 1][y]) Queue.add(new Edge(x, y, x + 1, y, random.nextInt(10) + 1));
-        if (y > 0 && !visited[x][y - 1]) Queue.add(new Edge(x, y, x, y - 1, random.nextInt(10) + 1));
-        if (y + 1 < cols && !visited[x][y + 1]) Queue.add(new Edge(x, y, x, y + 1, random.nextInt(10) + 1));
+            int x, int y, boolean[][] visited, PriorityQueue<Edge> queue, int rows, int cols) {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        if (x > 0 && !visited[x - 1][y]) queue.add(new Edge(x, y, x - 1, y, random.nextInt(10) + 1));
+        if (x + 1 < rows && !visited[x + 1][y]) queue.add(new Edge(x, y, x + 1, y, random.nextInt(10) + 1));
+        if (y > 0 && !visited[x][y - 1]) queue.add(new Edge(x, y, x, y - 1, random.nextInt(10) + 1));
+        if (y + 1 < cols && !visited[x][y + 1]) queue.add(new Edge(x, y, x, y + 1, random.nextInt(10) + 1));
     }
 }
