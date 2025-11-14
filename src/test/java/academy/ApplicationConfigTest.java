@@ -26,7 +26,9 @@ class ApplicationConfigTest {
     void loadConfigShouldReadYamlFileWhenProvided() throws Exception {
         Application app = new Application();
         Path tmp = Files.createTempFile("config", ".yaml");
-        Files.writeString(tmp, """
+        Files.writeString(
+                tmp,
+                """
                 fontSize: 12
                 words:
                   - hello

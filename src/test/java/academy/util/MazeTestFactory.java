@@ -3,9 +3,7 @@ package academy.util;
 import academy.maze.dto.CellType;
 import academy.maze.dto.Maze;
 
-/**
- * Small helpers for turning ASCII mazes into {@link Maze} objects for tests.
- */
+/** Small helpers for turning ASCII mazes into {@link Maze} objects for tests. */
 public final class MazeTestFactory {
     private MazeTestFactory() {}
 

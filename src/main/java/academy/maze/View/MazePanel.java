@@ -4,9 +4,9 @@ import academy.maze.dto.CellType;
 import academy.maze.dto.Maze;
 import academy.maze.dto.Path;
 import academy.maze.dto.Point;
-import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Graphics;
+import javax.swing.JPanel;
 
 public class MazePanel extends JPanel {
     private final Maze maze;
@@ -18,25 +18,20 @@ public class MazePanel extends JPanel {
     }
 
     @Override
-    protected void paintComponent(Graphics g)
-    {
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         int rows = maze.x();
         int cols = maze.y();
 
-        int cellSize = Math.max(1, Math.min(getWidth()/cols, getHeight()/rows));
+        int cellSize = Math.max(1, Math.min(getWidth() / cols, getHeight() / rows));
 
-        for(int r = 0; r < rows; r++)
-        {
-            for(int c = 0; c < cols; c++)
-            {
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
                 CellType type = maze.cells()[r][c];
 
-                if(type == CellType.WALL)
-                {
+                if (type == CellType.WALL) {
                     g.setColor(Color.BLACK);
-                }
-                else{
+                } else {
                     g.setColor(Color.WHITE);
                 }
 
@@ -45,14 +40,11 @@ public class MazePanel extends JPanel {
                 g.fillRect(x, y, cellSize, cellSize);
                 g.setColor(Color.GRAY);
                 g.drawRect(x, y, cellSize, cellSize);
-
             }
         }
-        if(path != null)
-        {
+        if (path != null) {
             g.setColor(Color.GREEN);
-            for(Point p : path.points())
-            {
+            for (Point p : path.points()) {
                 int px = p.y() * cellSize;
                 int py = p.x() * cellSize;
                 g.fillOval(px, py, cellSize, cellSize);

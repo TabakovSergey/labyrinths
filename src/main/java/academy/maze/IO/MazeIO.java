@@ -24,23 +24,22 @@ public class MazeIO {
 
             CellType[][] cells = new CellType[rows][cols];
 
-            for(int i = 0; i < rows; i++) {
+            for (int i = 0; i < rows; i++) {
                 String line = lines.get(i);
                 if (line.length() != cols) {
-                    throw new IllegalArgumentException(
-                        "Maze file must be rectangular. Line " + (i + 1) + " has length " + line.length() + ", expected " + cols
-                    );
+                    throw new IllegalArgumentException("Maze file must be rectangular. Line " + (i + 1) + " has length "
+                            + line.length() + ", expected " + cols);
                 }
-                for(int j = 0; j < cols; j++) {
+                for (int j = 0; j < cols; j++) {
                     cells[i][j] = (line.charAt(j) == '#') ? CellType.WALL : CellType.PATH;
                 }
             }
             return new Maze(cells, rows, cols);
-        }catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
     public static void saveToFile(Maze maze, File file, Path path) {
         StringBuilder sb = new StringBuilder();
         CellType[][] cells = maze.cells();
@@ -59,12 +58,11 @@ public class MazeIO {
 
         for (int i = 0; i < maze.x(); i++) {
             for (int j = 0; j < maze.y(); j++) {
-                if(cells[i][j] == CellType.WALL){
+                if (cells[i][j] == CellType.WALL) {
                     sb.append('#');
-                }else if(pathMask[i][j]){
+                } else if (pathMask[i][j]) {
                     sb.append('.');
-                }else
-                    sb.append(' ');
+                } else sb.append(' ');
             }
 
             sb.append(System.lineSeparator());
@@ -74,7 +72,6 @@ public class MazeIO {
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to save maze to " + file.getAbsolutePath());
-
         }
     }
 }

@@ -10,9 +10,9 @@ public class BuilderPath {
     public static Path buildPath(Point[][] parent, Point start, Point end) {
         List<Point> path = new ArrayList<>();
         Point current = end;
-        while(current != null) {
+        while (current != null) {
             path.add(current);
-            if(current.equals(start)) break;
+            if (current.equals(start)) break;
             current = parent[current.x()][current.y()];
         }
         Collections.reverse(path);

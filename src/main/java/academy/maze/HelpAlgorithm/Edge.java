@@ -1,9 +1,9 @@
 package academy.maze.HelpAlgorithm;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.jetbrains.annotations.NotNull;
 
 public class Edge implements Comparable<Edge> {
     private int x1, x2;
@@ -24,22 +24,22 @@ public class Edge implements Comparable<Edge> {
         return weight;
     }
 
-    public int GetX1()
-    {
+    public int GetX1() {
         return x1;
     }
-    public int GetX2()
-    {
+
+    public int GetX2() {
         return x2;
     }
-    public int GetY1()
-    {
+
+    public int GetY1() {
         return y1;
     }
-    public int GetY2()
-    {
+
+    public int GetY2() {
         return y2;
     }
+
     @Override
     public int compareTo(@NotNull Edge other) {
         return Integer.compare(this.getWeight(), other.getWeight());

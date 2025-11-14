@@ -33,8 +33,7 @@ class MazeIOTest {
             {CellType.WALL, CellType.PATH, CellType.WALL}
         };
         Maze maze = new Maze(cells, 3, 3);
-        academy.maze.dto.Path path = new academy.maze.dto.Path(
-                new Point[] {new Point(1, 1), new Point(2, 1)});
+        academy.maze.dto.Path path = new academy.maze.dto.Path(new Point[] {new Point(1, 1), new Point(2, 1)});
 
         Path tmp = Files.createTempFile("maze-save", ".txt");
         MazeIO.saveToFile(maze, tmp.toFile(), path);

@@ -15,11 +15,7 @@ class MazePrinterTest {
 
     @Test
     void printMazeWithoutPathShouldRenderWallsAndSpaces() {
-        Maze maze = MazeTestFactory.fromStringGrid(
-                "###",
-                "# #",
-                "###"
-        );
+        Maze maze = MazeTestFactory.fromStringGrid("###", "# #", "###");
 
         String output = captureOutput(() -> MazePrinter.printMazeNotPath(maze));
 
@@ -29,11 +25,7 @@ class MazePrinterTest {
 
     @Test
     void printMazeWithPathShouldOverlayDots() {
-        Maze maze = MazeTestFactory.fromStringGrid(
-                "###",
-                "# #",
-                "###"
-        );
+        Maze maze = MazeTestFactory.fromStringGrid("###", "# #", "###");
         Path path = new Path(new Point[] {new Point(1, 1)});
 
         String output = captureOutput(() -> MazePrinter.printMazePath(maze, path));

@@ -1,7 +1,7 @@
 package academy.maze.Solve;
 
 public class ChooseSolver {
-    public static Solver choose(String word){
+    public static Solver choose(String word) {
         if (word == null) {
             return null;
         }

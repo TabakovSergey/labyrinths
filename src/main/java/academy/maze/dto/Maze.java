@@ -5,4 +5,4 @@ package academy.maze.dto;
  *
  * @param cells Массив ячеек лабиринта.
  */
-public record Maze(CellType[][] cells, int x, int y) { }
+public record Maze(CellType[][] cells, int x, int y) {}
