@@ -23,8 +23,6 @@ class ApplicationCliTest {
                         "1",
                         "--height",
                         "1",
-                        "--window",
-                        "no",
                         "--output",
                         output.toString());
 
@@ -42,15 +40,13 @@ class ApplicationCliTest {
         int exitCode = new CommandLine(new Application())
                 .execute(
                         "solve",
-                        "--window",
-                        "no",
                         "--algorithm",
                         "dijkstra",
                         "--start",
                         "1,1",
                         "--end",
                         "3,3",
-                        "--input",
+                        "--file",
                         input.toString(),
                         "--output",
                         output.toString());

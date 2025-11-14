@@ -24,11 +24,11 @@ import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
-import picocli.CommandLine.Parameters;
 
 @Command(
-        name = "Application Example",
-        version = "Example 1.0",
+        name = "maze-app",
+        description = "Maze generator and solver CLI application.",
+        version = "1.0",
         mixinStandardHelpOptions = true,
         subcommands = {Application.GenerateCommand.class, Application.SolveCommand.class})
 public class Application implements Runnable {
@@ -36,36 +36,36 @@ public class Application implements Runnable {
     private static final ObjectReader YAML_READER =
             new ObjectMapper(new YAMLFactory()).findAndRegisterModules().reader();
 
-    @Command(name = "generate", description = "Generate a new Maze")
+    @Command(name = "generate", description = "Generate a maze with specified algorithm and dimensions.")
     static class GenerateCommand implements Runnable {
         @Option(
-                names = {"--width"},
+                names = {"-w", "--width"},
                 description = "Number of cells horizontally (maze width)",
                 required = true)
         private int width;
 
         @Option(
-                names = {"--height"},
+                names = {"-h", "--height"},
                 description = "Number of cells vertically (maze height)",
                 required = true)
         private int height;
 
         @Option(
-                names = {"--window"},
-                description = "whether to show the graphics window or not",
-                defaultValue = "no")
-        private String windowMode = "no";
-
-        @Option(
-                names = {"--algorithm"},
+                names = {"-a", "--algorithm"},
                 description = "Choose algorithm for build Maze",
                 required = true)
         private String algorithm;
 
         @Option(
-                names = {"--output", "-o"},
+                names = {"-o", "--output"},
                 description = "Output file to save Maze")
         private File output;
+
+        @Option(
+                names = "--window",
+                description = "Show graphical window",
+                defaultValue = "false")
+        private boolean showWindow;
 
         public void run() {
             validateDimensions(width, height);
@@ -78,7 +78,7 @@ public class Application implements Runnable {
             Maze res = gen.generate(width, height);
             MazePrinter.printMazeNotPath(res);
 
-            showWindowIfRequested(windowMode, res, null);
+            showWindowIfRequested(showWindow, res, null);
 
             if (output != null) {
                 MazeIO.saveToFile(res, output, null);
@@ -86,17 +86,11 @@ public class Application implements Runnable {
         }
     }
 
-    @Command(name = "solve", description = "Solve an Maze")
+    @Command(name = "solve", description = "Solve a maze with specified algorithm and points.")
     static class SolveCommand implements Runnable {
 
         @Option(
-                names = {"--window"},
-                description = "whether to show the graphics window or not",
-                defaultValue = "no")
-        private String windowMode = "no";
-
-        @Option(
-                names = {"--algorithm"},
+                names = {"-a", "--algorithm"},
                 description = "Choose algorithm for build Maze",
                 required = true)
         private String algorithm;
@@ -114,23 +108,36 @@ public class Application implements Runnable {
         private String end;
 
         @Option(
-                names = {"--input", "-i"},
-                description = "input file to save Maze",
+                names = {"-f", "--file"},
+                description = "Input file with Maze",
                 required = true)
-        private File input;
+        private File file;
 
         @Option(
-                names = {"--output"},
+                names = {"-o", "--output"},
                 description = "Output file to save Maze")
         private File output;
+
+        @Option(
+                names = "--window",
+                description = "Show graphical window",
+                defaultValue = "false")
+        private boolean showWindow;
 
         public void run() {
             System.out.println("Solving Maze, algorithm: " + algorithm);
 
-            Maze maze = MazeIO.loadFromFile(input);
+            Maze maze = MazeIO.loadFromFile(file);
 
-            Point startPoint = parse(start);
-            Point endPoint = parse(end);
+            Point startPoint;
+            Point endPoint;
+            try {
+                startPoint = parse(start);
+                endPoint = parse(end);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                return;
+            }
 
             if (!inBounds(startPoint, maze) || !inBounds(endPoint, maze)) {
                 System.out.println("Start or end point is out of maze bounds");
@@ -154,7 +161,7 @@ public class Application implements Runnable {
             }
             MazePrinter.printMazePath(maze, path);
 
-            showWindowIfRequested(windowMode, maze, path);
+            showWindowIfRequested(showWindow, maze, path);
 
             if (output != null) {
                 MazeIO.saveToFile(maze, output, path);
@@ -163,18 +170,18 @@ public class Application implements Runnable {
 
         private Point parse(String s) {
             if (s == null) {
-                throw new IllegalArgumentException("Point must be provided in format x,y");
+                throw new IllegalArgumentException("Invalid point format: null, expected format: x,y");
             }
             String[] parts = s.split(",");
             if (parts.length != 2) {
-                throw new IllegalArgumentException("Point must be provided in format x,y");
+                throw new IllegalArgumentException("Invalid point format: " + s + ", expected format: x,y");
             }
             try {
                 int px = Integer.parseInt(parts[0].trim());
                 int py = Integer.parseInt(parts[1].trim());
                 return new Point(px, py);
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Point must contain integer coordinates", e);
+                throw new IllegalArgumentException("Invalid point format: " + s + ", expected format: x,y", e);
             }
         }
 
@@ -187,20 +194,10 @@ public class Application implements Runnable {
         }
     }
 
-    @Option(
-            names = {"-s", "--font-size"},
-            description = "Font size")
     int fontSize;
 
-    @Parameters(
-            paramLabel = "<word>",
-            defaultValue = "Hello, picocli",
-            description = "Words to be translated into ASCII art.")
     private String[] words;
 
-    @Option(
-            names = {"-c", "--config"},
-            description = "Path to JSON config file")
     private File configPath;
 
     public static void main(String[] args) {
@@ -219,10 +216,11 @@ public class Application implements Runnable {
         }
     }
 
-    private static void showWindowIfRequested(String windowMode, Maze maze, Path path) {
-        if ("yes".equalsIgnoreCase(windowMode)) {
-            SwingUtilities.invokeLater(() -> new MazeWindow(maze, path));
+    private static void showWindowIfRequested(boolean showWindow, Maze maze, Path path) {
+        if (!showWindow) {
+            return;
         }
+        SwingUtilities.invokeLater(() -> new MazeWindow(maze, path));
     }
 
     private AppConfig loadConfig() {
