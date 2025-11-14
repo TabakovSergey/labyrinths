@@ -1,4 +1,4 @@
-package academy.maze;
+package academy.maze.Generate;
 
 import academy.maze.dto.Maze;
 
@@ -14,4 +14,5 @@ public interface Generator {
      * @throws IllegalArgumentException если невозможно сгенерировать лабиринт.
      */
     Maze generate(int width, int height);
+
 }
