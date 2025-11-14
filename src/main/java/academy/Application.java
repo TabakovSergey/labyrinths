@@ -186,7 +186,7 @@ public class Application implements Runnable {
             return maze.cells()[p.x()][p.y()] == CellType.PATH;
         }
 
-        private void saveSolvedMaze(Maze maze, academy.maze.dto.Path path, java.nio.file.Path outputPath) {
+        private void saveSolvedMaze(Maze maze, Path path, java.nio.file.Path outputPath) {
             try {
                 java.nio.file.Path parent = outputPath.toAbsolutePath().getParent();
                 if (parent != null) {
