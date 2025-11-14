@@ -68,8 +68,7 @@ public class GenerationPrima implements Generator {
         return new Maze(cell, rows, cols);
     }
 
-    private void addEdge(
-            int x, int y, boolean[][] visited, PriorityQueue<Edge> queue, int rows, int cols) {
+    private void addEdge(int x, int y, boolean[][] visited, PriorityQueue<Edge> queue, int rows, int cols) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         if (x > 0 && !visited[x - 1][y]) queue.add(new Edge(x, y, x - 1, y, random.nextInt(10) + 1));
         if (x + 1 < rows && !visited[x + 1][y]) queue.add(new Edge(x, y, x + 1, y, random.nextInt(10) + 1));
