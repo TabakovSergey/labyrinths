@@ -17,6 +17,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Arrays;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
@@ -104,10 +105,7 @@ public class Application implements Runnable {
                 required = true)
         private String end;
 
-        @Option(
-                names = {"-f", "--file"},
-                description = "Input file with Maze",
-                required = true)
+        @Option(names = {"-f", "--file"}, description = "Input file with Maze")
         private File file;
 
         @Option(
@@ -195,6 +193,9 @@ public class Application implements Runnable {
     private File configPath;
 
     public static void main(String[] args) {
+        if (args.length > 0 && "academy.Application".equals(args[0])) {
+            args = Arrays.copyOfRange(args, 1, args.length);
+        }
         new CommandLine(new Application()).execute(args);
     }
 
