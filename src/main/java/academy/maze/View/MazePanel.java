@@ -8,15 +8,42 @@ import java.awt.Color;
 import java.awt.Graphics;
 import javax.swing.JPanel;
 
+/**
+ * Панель для отрисовки лабиринта и пути.
+ * 
+ * <p>Отрисовывает лабиринт в виде сетки, где:
+ * <ul>
+ *   <li>Черные ячейки - стены</li>
+ *   <li>Белые ячейки - проходимые пути</li>
+ *   <li>Зеленые круги - точки найденного пути</li>
+ * </ul>
+ * 
+ * <p>Размер ячеек автоматически вычисляется на основе размера панели
+ * и размеров лабиринта для оптимального отображения.
+ */
 public class MazePanel extends JPanel {
+    /** Лабиринт для отображения. */
     private final Maze maze;
+    
+    /** Путь в лабиринте (может быть null). */
     private final Path path;
 
+    /**
+     * Создает новую панель для отображения лабиринта.
+     * 
+     * @param maze лабиринт для отображения
+     * @param path путь в лабиринте (может быть null)
+     */
     public MazePanel(Maze maze, Path path) {
         this.maze = maze;
         this.path = path;
     }
 
+    /**
+     * Отрисовывает лабиринт и путь на панели.
+     * 
+     * @param g графический контекст для отрисовки
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

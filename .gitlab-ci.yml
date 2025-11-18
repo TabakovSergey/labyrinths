@@ -58,13 +58,29 @@ Build:
     paths:
       - target/project-1.0.jar
 
-Run Black Box Tests:
-  stage: blackbox-tests
+Build Docker Image:
+  stage: build
   extends:
     - .docker
   needs:
     - job: Build
       artifacts: true
   script:
-    - docker build --build-arg RUNTIME_IMAGE=$GITLAB_DOCKER_PROXY/eclipse-temurin:24-jre -t app .
+    - docker build --build-arg RUNTIME_IMAGE=$GITLAB_DOCKER_PROXY/eclipse-temurin:24-jre -t app:$CI_COMMIT_SHA -t app:latest .
+    - docker save app:latest | gzip > app-image.tar.gz
+  artifacts:
+    paths:
+      - app-image.tar.gz
+    expire_in: 1 week
+
+Run Black Box Tests:
+  stage: blackbox-tests
+  extends:
+    - .docker
+  needs:
+    - job: Build Docker Image
+      artifacts: true
+  script:
+    - docker load < app-image.tar.gz
+    - docker run --rm app:latest --help
     - ./tests/run.sh tests/cases

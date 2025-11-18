@@ -26,6 +26,20 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
+/**
+ * Главный класс приложения для генерации и решения лабиринтов.
+ * 
+ * <p>Приложение предоставляет CLI интерфейс для работы с лабиринтами:
+ * <ul>
+ *   <li>Генерация лабиринтов с использованием различных алгоритмов (DFS, Prim)</li>
+ *   <li>Решение лабиринтов с использованием алгоритмов поиска пути (Dijkstra, A*)</li>
+ *   <li>Сохранение и загрузка лабиринтов из файлов</li>
+ *   <li>Визуализация лабиринтов в графическом окне</li>
+ * </ul>
+ * 
+ * @author Academy Team
+ * @version 1.0
+ */
 @Command(
         name = "maze-app",
         description = "Maze generator and solver CLI application.",
@@ -37,6 +51,12 @@ public class Application implements Runnable {
     private static final ObjectReader YAML_READER =
             new ObjectMapper(new YAMLFactory()).findAndRegisterModules().reader();
 
+    /**
+     * Команда для генерации лабиринта.
+     * 
+     * <p>Генерирует лабиринт заданного размера с использованием указанного алгоритма.
+     * Поддерживаемые алгоритмы: dfs, prim.
+     */
     @Command(name = "generate", description = "Generate a maze with specified algorithm and dimensions.")
     static class GenerateCommand implements Runnable {
         @Option(
@@ -81,6 +101,13 @@ public class Application implements Runnable {
         }
     }
 
+    /**
+     * Команда для решения лабиринта.
+     * 
+     * <p>Находит путь от начальной точки до конечной в загруженном лабиринте
+     * с использованием указанного алгоритма поиска пути.
+     * Поддерживаемые алгоритмы: dijkstra, astar.
+     */
     @Command(name = "solve", description = "Solve a maze with specified algorithm and points.")
     static class SolveCommand implements Runnable {
 
@@ -227,12 +254,20 @@ public class Application implements Runnable {
         }
     }
 
+    /** Размер шрифта для конфигурации. */
     int fontSize;
 
+    /** Массив слов для конфигурации. */
     private String[] words;
 
+    /** Путь к файлу конфигурации. */
     private File configPath;
 
+    /**
+     * Точка входа в приложение.
+     * 
+     * @param args аргументы командной строки
+     */
     public static void main(String[] args) {
         if (args.length > 0 && "academy.Application".equals(args[0])) {
             args = Arrays.copyOfRange(args, 1, args.length);
@@ -246,12 +281,26 @@ public class Application implements Runnable {
         LOGGER.atInfo().addKeyValue("config", config).log("Config content");
     }
 
+    /**
+     * Валидирует размеры лабиринта.
+     * 
+     * @param width ширина лабиринта
+     * @param height высота лабиринта
+     * @throws IllegalArgumentException если ширина или высота неположительны
+     */
     private static void validateDimensions(int width, int height) {
         if (width <= 0 || height <= 0) {
             throw new IllegalArgumentException("Width and height must be positive integers.");
         }
     }
 
+    /**
+     * Отображает графическое окно с лабиринтом, если это запрошено.
+     * 
+     * @param showWindow флаг необходимости отображения окна
+     * @param maze лабиринт для отображения
+     * @param path путь в лабиринте (может быть null)
+     */
     private static void showWindowIfRequested(boolean showWindow, Maze maze, Path path) {
         if (!showWindow) {
             return;
@@ -259,6 +308,12 @@ public class Application implements Runnable {
         SwingUtilities.invokeLater(() -> new MazeWindow(maze, path));
     }
 
+    /**
+     * Загружает конфигурацию приложения из файла или использует значения по умолчанию.
+     * 
+     * @return конфигурация приложения
+     * @throws UncheckedIOException если произошла ошибка при чтении файла
+     */
     private AppConfig loadConfig() {
         // fill with cli options
         if (configPath == null) return new AppConfig(fontSize, words);

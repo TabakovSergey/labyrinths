@@ -8,7 +8,29 @@ import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Генератор лабиринтов на основе алгоритма поиска в глубину (DFS).
+ * 
+ * <p>Использует алгоритм обхода графа в глубину для создания лабиринта.
+ * Алгоритм работает следующим образом:
+ * <ol>
+ *   <li>Начинает с случайной ячейки</li>
+ *   <li>Выбирает случайного непосещенного соседа</li>
+ *   <li>Удаляет стену между текущей ячейкой и выбранным соседом</li>
+ *   <li>Продолжает рекурсивно для новой ячейки</li>
+ *   <li>При отсутствии непосещенных соседей возвращается назад</li>
+ * </ol>
+ * 
+ * <p>Результирующий лабиринт гарантированно имеет один уникальный путь
+ * между любыми двумя ячейками.
+ */
 public class GenerationDFS implements Generator {
+    /**
+     * {@inheritDoc}
+     * 
+     * <p>Генерирует лабиринт с использованием алгоритма DFS.
+     */
+    @Override
     public Maze generate(int x, int y) {
         int rows = x * 2 + 1, cols = y * 2 + 1;
         CellType[][] cell = new CellType[rows][cols];
@@ -47,6 +69,16 @@ public class GenerationDFS implements Generator {
         return new Maze(cell, rows, cols);
     }
 
+    /**
+     * Получает список непосещенных соседних ячеек.
+     * 
+     * @param x координата X текущей ячейки
+     * @param y координата Y текущей ячейки
+     * @param visited массив посещенных ячеек
+     * @param maxX максимальная координата X
+     * @param maxY максимальная координата Y
+     * @return список координат непосещенных соседей
+     */
     private List<int[]> getUnvisitedNeighbors(int x, int y, boolean[][] visited, int maxX, int maxY) {
         List<int[]> neighbors = new ArrayList<>();
 
@@ -60,6 +92,15 @@ public class GenerationDFS implements Generator {
         return neighbors;
     }
 
+    /**
+     * Удаляет стену между двумя соседними ячейками.
+     * 
+     * @param x1 координата X первой ячейки
+     * @param y1 координата Y первой ячейки
+     * @param x2 координата X второй ячейки
+     * @param y2 координата Y второй ячейки
+     * @param cell массив ячеек лабиринта
+     */
     private void removeWall(int x1, int y1, int x2, int y2, CellType[][] cell) {
         int gridX1 = x1 * 2 + 1, gridY1 = y1 * 2 + 1, gridX2 = x2 * 2 + 1, gridY2 = y2 * 2 + 1;
 

@@ -9,7 +9,31 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
+/**
+ * Утилитный класс для загрузки и сохранения лабиринтов в файлы.
+ * 
+ * <p>Поддерживает текстовый формат, где:
+ * <ul>
+ *   <li>'#' - стена (WALL)</li>
+ *   <li>' ' (пробел) - проходимая ячейка (PATH)</li>
+ *   <li>'.' - точка пути (при сохранении с решением)</li>
+ *   <li>'O' - начальная точка (при сохранении с решением)</li>
+ *   <li>'X' - конечная точка (при сохранении с решением)</li>
+ * </ul>
+ */
 public class MazeIO {
+    /**
+     * Загружает лабиринт из текстового файла.
+     * 
+     * <p>Файл должен содержать прямоугольную сетку символов:
+     * '#' для стен и пробелы для проходимых ячеек.
+     * 
+     * @param file файл с лабиринтом
+     * @return загруженный лабиринт
+     * @throws IllegalArgumentException если файл пуст, содержит пустые строки
+     *                                  или имеет некорректный формат
+     * @throws RuntimeException если произошла ошибка при чтении файла
+     */
     public static Maze loadFromFile(File file) {
         try {
             List<String> lines = Files.readAllLines(file.toPath());
@@ -40,6 +64,17 @@ public class MazeIO {
         }
     }
 
+    /**
+     * Сохраняет лабиринт в текстовый файл.
+     * 
+     * <p>Если указан путь (path), то точки пути отмечаются символом '.',
+     * начальная точка - 'O', конечная - 'X'.
+     * 
+     * @param maze лабиринт для сохранения
+     * @param file файл для сохранения
+     * @param path путь в лабиринте (может быть null)
+     * @throws RuntimeException если произошла ошибка при записи файла
+     */
     public static void saveToFile(Maze maze, File file, Path path) {
         StringBuilder sb = new StringBuilder();
         CellType[][] cells = maze.cells();
