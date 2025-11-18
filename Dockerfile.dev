@@ -1,0 +1,27 @@
+# Dockerfile для разработки
+FROM maven:3.9.11-eclipse-temurin-24
+
+WORKDIR /app
+
+# Устанавливаем дополнительные инструменты для разработки
+RUN apt-get update && apt-get install -y \
+    vim \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Копируем Maven wrapper
+COPY mvnw mvnw.cmd ./
+COPY pom.xml ./
+
+# Загружаем зависимости
+RUN mvn dependency:go-offline -B
+
+# Копируем исходный код
+COPY src ./src
+
+# Собираем проект
+RUN mvn clean compile
+
+# По умолчанию запускаем интерактивную оболочку
+CMD ["/bin/bash"]
+

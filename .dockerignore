@@ -1,0 +1,18 @@
+# Игнорируем файлы при сборке Docker образа
+target/
+.mvn/
+.m2/
+.git/
+.gitignore
+*.md
+!README.md
+.idea/
+.vscode/
+*.iml
+.DS_Store
+tests/
+docs/
+*.log
+.env
+.env.local
+

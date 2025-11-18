@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  maze-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        RUNTIME_IMAGE: eclipse-temurin:24-jre
+    image: maze-app:latest
+    container_name: maze-generator
+    volumes:
+      # Монтируем директорию для входных/выходных файлов
+      - ./data:/app/data
+      - ./mazes:/app/mazes
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    # Можно запускать команды через docker-compose exec
+    # Пример: docker-compose exec maze-app java -jar app.jar generate --width 10 --height 10 --algorithm dfs --output /app/mazes/maze.txt
+    stdin_open: true
+    tty: true
+

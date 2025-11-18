@@ -1,0 +1,33 @@
+version: '3.8'
+
+# Docker Compose для разработки
+# Использование: docker-compose -f docker-compose.dev.yml up
+
+services:
+  maze-app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: maze-app:dev
+    container_name: maze-generator-dev
+    volumes:
+      # Монтируем исходный код для hot-reload
+      - ./src:/app/src
+      - ./pom.xml:/app/pom.xml
+      - ./mvnw:/app/mvnw
+      - ./mvnw.cmd:/app/mvnw.cmd
+      - ./data:/app/data
+      - ./mazes:/app/mazes
+      # Кэш Maven
+      - maven-cache:/root/.m2
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
+      - MAVEN_OPTS=-Dmaven.repo.local=/root/.m2/repository
+    working_dir: /app
+    command: tail -f /dev/null  # Оставляем контейнер запущенным
+    stdin_open: true
+    tty: true
+
+volumes:
+  maven-cache:
+
